@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Include the CesiumJS JavaScript and CSS files -->
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.102/Build/Cesium/Cesium.js"></script>
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.102/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+    }
+    html,
+    body,
+    #cesiumContainer {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+  <script>
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzZmYwOTJjYi1mNmY3LTRkOGItODIxOS04YzQyOGU1MjcwZjkiLCJpZCI6MTI1MjA2LCJpYXQiOjE2NzY2MzMwNTV9.BQ-kGE-Fq696LTdmL7xEdjMR12iy5b87uvC0gga2pRg';
+
+    Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(90, -20, 110, 90)
+
+    // Initialize the Cesium Viewer in the HTML element with the `cesiumContainer` ID.
+    const viewer = new Cesium.Viewer('cesiumContainer', {
+      timeline: false,
+      animation: false,
+      baseLayerPicker: false,
+      sceneModePicker: false,
+    });
+  </script>
+ </div>
+</body>
+</html>
