@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="../assets/base.css" />
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.102/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.102/Build/Cesium/Cesium.js"></script>
+  <script src="../assets/vue.js"></script>
+  <title>场景渲染事件</title>
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+  <script>
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzZmYwOTJjYi1mNmY3LTRkOGItODIxOS04YzQyOGU1MjcwZjkiLCJpZCI6MTI1MjA2LCJpYXQiOjE2NzY2MzMwNTV9.BQ-kGE-Fq696LTdmL7xEdjMR12iy5b87uvC0gga2pRg';
+    Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(90, -20, 110, 90)
+
+    const viewer = new Cesium.Viewer('cesiumContainer', {
+      imageryProvider: new Cesium.ArcGisMapServerImageryProvider({
+        url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'
+      }), // 加载Arcgis影像服务
+    });
+
+    viewer.useDefaultRenderLoop = false // 关闭Cesium场景自动渲染
+    // viewer.render() // 主动触发Ceisum场景渲染
+
+    // 点击6次触发渲染按钮后，地球将会被渲染出来
+    // ...
+
+    viewer.scene.postRender.addEventListener(() => {
+      console.log('postRender')
+    })
+
+    viewer.scene.postUpdate.addEventListener(() => {
+      console.log('postUpdate')
+    })
+
+    viewer.scene.preRender.addEventListener(() => {
+      console.log('preRender')
+    })
+
+    viewer.scene.preUpdate.addEventListener(() => {
+      console.log('preUpdate')
+    })
+  </script>
+ </div>
+</body>
+</html>

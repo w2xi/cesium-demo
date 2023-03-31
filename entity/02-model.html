@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="../assets/base.css" />
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.102/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.102/Build/Cesium/Cesium.js"></script>
+  <title>实体 - Entity: Models</title>
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+  <script>
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzZmYwOTJjYi1mNmY3LTRkOGItODIxOS04YzQyOGU1MjcwZjkiLCJpZCI6MTI1MjA2LCJpYXQiOjE2NzY2MzMwNTV9.BQ-kGE-Fq696LTdmL7xEdjMR12iy5b87uvC0gga2pRg';
+    Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(90, -20, 110, 90)
+
+    const viewer = new Cesium.Viewer('cesiumContainer', {
+      shouldAnimate: true,
+    });
+
+    const position = Cesium.Cartesian3.fromDegrees(
+      -123.0744619,
+      44.0503706,
+      5000.0
+    );
+    const heading = Cesium.Math.toRadians(135);
+    const pitch = 0;
+    const roll = 0;
+    const hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
+    const orientation = Cesium.Transforms.headingPitchRollQuaternion(
+      position,
+      hpr
+    );
+
+    const entity = viewer.entities.add({
+      name: "../SampleData/models/CesiumAir/Cesium_Air.glb",
+      position: position,
+      orientation: orientation,
+      model: {
+        uri: "../SampleData/models/CesiumAir/Cesium_Air.glb",
+        minimumPixelSize: 128,
+        maximumScale: 20000,
+      },
+    });
+    viewer.trackedEntity = entity;
+  </script>
+ </div>
+</body>
+</html>

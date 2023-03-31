@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="../assets/base.css" />
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.102/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.102/Build/Cesium/Cesium.js"></script>
+  <script src="../assets/vue.js"></script>
+  <title>坐标拾取 drillPick - Cesium3DTileFeature 集合</title>
+  <style>
+    .card {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: #fff;
+      background: #333;
+      padding: 20px;
+      border-radius: 15px;
+      z-index: 1;
+    }
+    .card * {
+      color: #fff;
+    }
+    .content {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="tip">提示: 点击3D tiles将显示拾取到 Cesium3DTileFeature 对象的个数</div>
+    <div class="content">
+      拾取到的 Cesium3DTileFeature 对象个数: {{ count }}
+    </div>
+  </div>
+  <div id="cesiumContainer"></div>
+  <script>
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzZmYwOTJjYi1mNmY3LTRkOGItODIxOS04YzQyOGU1MjcwZjkiLCJpZCI6MTI1MjA2LCJpYXQiOjE2NzY2MzMwNTV9.BQ-kGE-Fq696LTdmL7xEdjMR12iy5b87uvC0gga2pRg';
+    Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(90, -20, 110, 90)
+
+    const viewer = new Cesium.Viewer('cesiumContainer');
+    // 创建屏幕空间事件处理器
+    const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+
+    const vm = new Vue({
+      el: '.card',
+      data: {
+        count: 0,
+      },
+    })
+
+    let prevFeature;
+    const originalColor = new Cesium.Color();
+    // 定义一个 点击事件
+    handler.setInputAction((movement) => {
+      // 拾取 3D tiles 集合
+      const features = viewer.scene.drillPick(movement.position); // 传入一个 Cartesian2 对象
+      features.forEach(item => {
+        item.color = Cesium.Color.RED;
+      })
+      vm.count = features.length;
+    }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
+    // 加载3D tiles
+    const tiles = viewer.scene.primitives.add(
+      new Cesium.Cesium3DTileset({
+        url: '../assets/3dtiles/tilesset/tileset.json',
+      })
+    );
+    // 视角定位到 3D tiles
+    viewer.zoomTo(tiles);
+  </script>
+ </div>
+</body>
+</html>

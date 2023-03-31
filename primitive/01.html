@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="../assets/base.css" />
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.102/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.102/Build/Cesium/Cesium.js"></script>
+  <title>实体 - Entity</title>
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+  <script>
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzZmYwOTJjYi1mNmY3LTRkOGItODIxOS04YzQyOGU1MjcwZjkiLCJpZCI6MTI1MjA2LCJpYXQiOjE2NzY2MzMwNTV9.BQ-kGE-Fq696LTdmL7xEdjMR12iy5b87uvC0gga2pRg';
+    Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(90, -20, 110, 90)
+
+    // 图形（Primitive）是Cesium中更加高阶的创建图形的方法，那么相对低阶的方法就是使用实体（Entity）定义一个图形。当创建一个图形时，两者的流程都是定义实体的尺寸大小和定义实体的材质外观
+    // 图形（Primitive）由两部分组成
+    //  几何形状（Geometry）：定义了Primitive的结构，例如三角形、线条、点等；
+    //  外观（Appearance ）：定义Primitive的着色（Sharding），包括GLSL（OpenGL着色语言，OpenGL Shading Language）顶点着色器和片段着色器（ vertex and fragment shaders），以及渲染状态（render state）
+
+    const viewer = new Cesium.Viewer('cesiumContainer');
+
+    // Example 1: Create primitive with a single instance
+    // const rectangleInstance = new Cesium.GeometryInstance({
+    //   id : 'rectangle',
+    //   geometry : new Cesium.RectangleGeometry({
+    //     rectangle : Cesium.Rectangle.fromDegrees(-140.0, 30.0, -100.0, 40.0)
+    //   }),
+    //   attributes : {
+    //     color : new Cesium.ColorGeometryInstanceAttribute(0.0, 1.0, 1.0, 0.5)
+    //   }
+    // });
+    // const ground = new Cesium.GroundPrimitive({
+    //   geometryInstances : rectangleInstance
+    // })
+    // viewer.scene.primitives.add(ground);
+
+    // GeometryInstance是Geometry的一个容器
+    const instance = new Cesium.GeometryInstance({
+      geometry: new Cesium.RectangleGeometry({
+        rectangle: Cesium.Rectangle.fromDegrees(-100.0, 20.0, -90.0, 30.0),
+        vertexFormat: Cesium.EllipsoidSurfaceAppearance.VERTEX_FORMAT
+      })
+    })
+    // 使用抽象的Primitive而不是RectanglePrimitive
+    const rectanglePrimitive = viewer.scene.primitives.add(new Cesium.Primitive({
+      geometryInstances: instance,
+      // 使用该外观，可以使矩形覆盖在地球表面，或者悬浮一定的高度
+      appearance: new Cesium.EllipsoidSurfaceAppearance({
+        material: Cesium.Material.fromType('Dot')
+      })
+    }))
+  </script>
+ </div>
+</body>
+</html>

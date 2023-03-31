@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.102/Build/Cesium/Cesium.js"></script>
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.102/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+  <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/base.css" />
+  <script src="../assets/vue.js"></script>
+  <style>
+    .card {
+      position: absolute;
+      top: 10px;
+      left: 20px;
+      width: 300px;
+      padding: 15px;
+      border-radius: 15px;
+      background: rgba(0,0,0,.8);
+      color: #fff;
+      z-index: 1;
+    }
+    .tip {
+      color: #fff;
+    }
+    .controls {
+      margin-top: 10px;
+    }
+    .row + .row {
+      margin-top: 10px !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="tip">
+      提示：输入amount参数后点击按钮完成视角的缩放
+    </div>
+    <!-- 控件 -->
+    <div class="controls">
+      <div class="row">
+        <div class="col">
+          <button type="button" class="btn btn-primary btn-sm" @click="zoom('in')">ZoomIn</button>
+        </div>
+        <div class="col">
+          <input class="form-control" v-model="zooInAmount">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <button type="button" class="btn btn-primary btn-sm" @click="zoom('out')">ZoomOut</button>
+        </div>
+        <div class="col">
+          <input class="form-control" v-model="zooOutAmount">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="cesiumContainer"></div>
+  <script>
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzZmYwOTJjYi1mNmY3LTRkOGItODIxOS04YzQyOGU1MjcwZjkiLCJpZCI6MTI1MjA2LCJpYXQiOjE2NzY2MzMwNTV9.BQ-kGE-Fq696LTdmL7xEdjMR12iy5b87uvC0gga2pRg';
+    Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(90, -20, 110, 90)
+
+    const viewer = new Cesium.Viewer('cesiumContainer');
+    const vm = new Vue({
+      el: '.card',
+      data: {
+        zooInAmount: 2000000,
+        zooOutAmount: 2000000,
+      },
+      methods: {
+        zoom(type) {
+          if (type === 'in') {
+            viewer.camera.zoomIn(this.zooInAmount)
+          } else {
+            viewer.camera.zoomOut(this.zooOutAmount)
+          }
+        }
+      }
+    })
+  </script>
+ </div>
+</body>
+</html>

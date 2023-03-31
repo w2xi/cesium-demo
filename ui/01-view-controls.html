@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.102/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+  <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/base.css" />
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.102/Build/Cesium/Cesium.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lil-gui@0.18"></script>
+  <title>GUI - 视图控件操作</title>
+  <style>
+   .tip {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 5px 10px;
+    color: #fff;
+    background-color: #333;
+    border-radius: 5px;
+    font-size: 15px;
+    z-index: 1;
+   }
+   .lil-gui {
+    left: 10px !important;
+    top: 50px !important;
+   }
+  </style>
+</head>
+<body>
+  <div class="tip">
+    提示: 点击显示或隐藏控件
+  </div>
+  <div id="cesiumContainer"></div>
+  <script>
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzZmYwOTJjYi1mNmY3LTRkOGItODIxOS04YzQyOGU1MjcwZjkiLCJpZCI6MTI1MjA2LCJpYXQiOjE2NzY2MzMwNTV9.BQ-kGE-Fq696LTdmL7xEdjMR12iy5b87uvC0gga2pRg';
+    Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(90, -20, 110, 90)
+
+    const viewer = new Cesium.Viewer('cesiumContainer');
+    const gui = new lil.GUI();
+    const controls = {
+      geocoder: true,
+      homeButton: true,
+      sceneModePicker: true,
+      navigationHelpButton: true,
+      animation: true,
+      creditContainer: true,
+      timeline: true,
+      fullscreenButton: true,
+    }
+    let geocoderDisplay = document.getElementsByClassName('cesium-viewer-geocoderContainer')[0]
+    let homeButtonDisplay = document.getElementsByClassName('cesium-home-button')[0]
+    let sceneModePickerDisplay = document.getElementsByClassName('cesium-sceneModePicker-wrapper')[0]
+    let navigationHelpButtonDisplay = document.getElementsByClassName('cesium-navigationHelpButton-wrapper')[0]
+    let animationDisplay = document.getElementsByClassName('cesium-viewer-animationContainer')[0]
+    let creditContainerDisplay = document.getElementsByClassName('cesium-viewer-bottom')[0]
+    let timelineDisplay = document.getElementsByClassName('cesium-timeline-main')[0]
+    let fullscreenButtonDisplay = document.getElementsByClassName('cesium-viewer-fullscreenContainer')[0]
+
+    gui.add(controls, 'geocoder').name('查找位置').onChange((e) => {
+      geocoderDisplay.style.display = e ? "inline-block" : "none"
+    })
+    gui.add(controls, 'homeButton').name('返回视角到初始位置').onChange((e) => {
+      homeButtonDisplay.style.display = e ? "inline-block" : "none"
+    })
+    gui.add(controls, 'sceneModePicker').name('视角模式').onChange((e) => {
+      sceneModePickerDisplay.style.display = e ? "inline-block" : "none"
+    })
+    gui.add(controls, 'navigationHelpButton').name('帮助').onChange((e) => {
+      navigationHelpButtonDisplay.style.display = e ? "inline-block" : "none"
+    })
+    gui.add(controls, 'animation').name('动画速度控制器').onChange((e) => {
+      animationDisplay.style.display = e ? "inline-block" : "none"
+    })
+    gui.add(controls, 'creditContainer').name('版权信息').onChange((e) => {
+      creditContainerDisplay.style.display = e ? "inline-block" : "none"
+    })
+    gui.add(controls, 'timeline').name('时间轴').onChange((e) => {
+      timelineDisplay.style.display = e ? "inline-block" : "none"
+    })
+    gui.add(controls, 'fullscreenButton').name('全屏按钮').onChange((e) => {
+      fullscreenButtonDisplay.style.display = e ? "inline-block" : "none"
+    })
+  </script>
+ </div>
+</body>
+</html>

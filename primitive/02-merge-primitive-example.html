@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="../assets/base.css" />
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.102/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.102/Build/Cesium/Cesium.js"></script>
+  <title>图形 - Primitive: 合并集合图形</title>
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+  <script>
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzZmYwOTJjYi1mNmY3LTRkOGItODIxOS04YzQyOGU1MjcwZjkiLCJpZCI6MTI1MjA2LCJpYXQiOjE2NzY2MzMwNTV9.BQ-kGE-Fq696LTdmL7xEdjMR12iy5b87uvC0gga2pRg';
+    Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(90, -20, 110, 90)
+
+    const viewer = new Cesium.Viewer('cesiumContainer')
+
+    // 合并集合图形
+
+    let rid = 0;
+    let instances = [] // 用于存放所有geometry
+    for (let lon = -180.0; lon < 180.0; lon += 5.0) {
+      for (let lat = -90.0; lat < 90.0; lat += 5.0) {
+        rid++;
+        instances.push(new Cesium.GeometryInstance({
+          id: 'rectangle-' + rid,
+          geometry: new Cesium.RectangleGeometry({
+            rectangle: Cesium.Rectangle.fromDegrees(lon, lat, lon + 5.0, lat + 5.0)
+          }),
+          attributes: {
+            color: Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.fromRandom({
+              alpha: 0.5
+            }))
+          }
+        }));
+      }
+    }
+    viewer.scene.primitives.add(new Cesium.Primitive({
+      geometryInstances: instances, // 合并
+      // 某些外观允许每个几何图形实例分别指定某个属性，例如：
+      appearance: new Cesium.PerInstanceColorAppearance()
+    }))
+
+    // HTML overlay for showing feature name on mouseover
+    const nameOverlay = document.createElement("div");
+    viewer.container.appendChild(nameOverlay);
+    nameOverlay.className = "backdrop";
+    nameOverlay.style.display = "none";
+    nameOverlay.style.position = "absolute";
+    nameOverlay.style.bottom = "0";
+    nameOverlay.style.left = "0";
+    nameOverlay.style["pointer-events"] = "none";
+    nameOverlay.style.padding = "4px";
+    nameOverlay.style.backgroundColor = "black";
+    nameOverlay.style.color = "white";
+
+    const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+
+    // 鼠标移动到 primitive 显示 HTMLOverlay
+    handler.setInputAction((movement) => {
+      const pick = viewer.scene.pick(movement.endPosition);
+      if (!Cesium.defined(pick)) {
+        nameOverlay.style.display = 'none';
+        return;
+      }
+      if (pick.id) {
+        // show HTML Overlay
+        nameOverlay.style.display = 'block';
+        nameOverlay.textContent = pick.id;
+        nameOverlay.style.bottom = `${viewer.canvas.clientHeight - movement.endPosition.y}px`;
+        nameOverlay.style.left = `${movement.endPosition.x}px`;
+      }
+    }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+
+    // 点击 primitive 随机改变颜色
+    handler.setInputAction((movement) => {
+      const pick = viewer.scene.pick(movement.position);
+      if (Cesium.defined(pick)) {
+        // modify primitive color
+        const attributes = pick.primitive.getGeometryInstanceAttributes(pick.id)
+        attributes.color = Cesium.ColorGeometryInstanceAttribute.toValue(Cesium.Color.fromRandom({
+          alpha: 1.0
+        }))
+      }
+    }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+  </script>
+ </div>
+</body>
+</html>

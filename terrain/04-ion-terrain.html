@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.102/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+  <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/base.css" />
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.102/Build/Cesium/Cesium.js"></script>
+  <title>Terrain ion 地形</title>
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+  <script>
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzZmYwOTJjYi1mNmY3LTRkOGItODIxOS04YzQyOGU1MjcwZjkiLCJpZCI6MTI1MjA2LCJpYXQiOjE2NzY2MzMwNTV9.BQ-kGE-Fq696LTdmL7xEdjMR12iy5b87uvC0gga2pRg';
+    Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(90, -20, 110, 90)
+
+    const viewer = new Cesium.Viewer('cesiumContainer')
+
+    viewer.terrainProvider = Cesium.createWorldTerrain({
+      requestWaterMask: true, // 请求水体效果所需要的海岸线数据
+    })
+
+    // 地形等高线
+
+    /**
+     * @description: 
+     * @param {*} width 等高线的线宽，单位px
+     * @param {*} spacing 等高线的高度间隔，单位m
+     * @param {*} color 等高线的颜色，Cesium.Color
+     * @return {*}
+     */    
+    function contourLine(width, spacing, color) {
+      let material = Cesium.Material.fromType("ElevationContour")
+      material.uniforms.width = width
+      material.uniforms.spacing = spacing
+      material.uniforms.color = color
+      viewer.scene.globe.material = material
+    }
+
+    // 等高线的线宽为2px，高度间隔为100m，颜色为红色
+    contourLine(2.0, 100, Cesium.Color.RED)
+
+  </script>
+ </div>
+</body>
+</html>

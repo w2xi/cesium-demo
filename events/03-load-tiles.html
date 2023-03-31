@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="../assets/base.css" />
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.102/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.102/Build/Cesium/Cesium.js"></script>
+  <script src="../assets/vue.js"></script>
+  <title>数据加载事件 - Tiles</title>
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+  <script>
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzZmYwOTJjYi1mNmY3LTRkOGItODIxOS04YzQyOGU1MjcwZjkiLCJpZCI6MTI1MjA2LCJpYXQiOjE2NzY2MzMwNTV9.BQ-kGE-Fq696LTdmL7xEdjMR12iy5b87uvC0gga2pRg';
+    Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(90, -20, 110, 90)
+
+    const viewer = new Cesium.Viewer('cesiumContainer', {
+      imageryProvider: new Cesium.ArcGisMapServerImageryProvider({
+        url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'
+      }), // 加载Arcgis影像服务
+    });
+
+    // 加载3D tiles
+    const tileset = viewer.scene.primitives.add(
+      new Cesium.Cesium3DTileset({
+        url: '../assets/3dtiles/tilesset/tileset.json',
+      })
+    )
+
+    console.log(tileset);
+
+    // 视角定位到3D tiles
+    viewer.zoomTo(tileset)
+
+    // allTilesLoaded 瓦片集加载完成
+    tileset.allTilesLoaded.addEventListener(() => {
+      console.log('allTilesLoaded，瓦片集加载完成')
+    })
+
+    // initialTilesLoaded 瓦片集加载完成，并且场景初始化完成
+    tileset.initialTilesLoaded.addEventListener(() => {
+      console.log('initialTilesLoaded，瓦片集加载完成，并且场景初始化完成')
+    })
+
+    // loadProgress 瓦片加载进度
+    tileset.loadProgress.addEventListener((numberOfPendingRequests, numberOfTilesProcessing) => {
+      if ((numberOfPendingRequests === 0) && (numberOfTilesProcessing === 0)) {
+        console.log('loadProgress，加载完成')
+        return
+      }
+      console.log('loadProgress，请求挂起的瓦片数量' + numberOfPendingRequests + ', 正在处理的瓦片数量: ' + numberOfTilesProcessing);
+    })
+
+    // tileLoad 一个瓦片被加载
+    tileset.tileLoad.addEventListener(tile => {
+      console.log('tileLoad，一个瓦片被加载了', tile)
+    })
+
+    // 显示3D tiles的瓦片包围盒
+    tileset.debugShowContentBoundingVolume = true
+  </script>
+ </div>
+</body>
+</html>

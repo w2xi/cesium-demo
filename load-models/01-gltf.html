@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="../assets/base.css" />
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.102/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.102/Build/Cesium/Cesium.js"></script>
+  <title>模型 - glTF</title>
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+  <script>
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzZmYwOTJjYi1mNmY3LTRkOGItODIxOS04YzQyOGU1MjcwZjkiLCJpZCI6MTI1MjA2LCJpYXQiOjE2NzY2MzMwNTV9.BQ-kGE-Fq696LTdmL7xEdjMR12iy5b87uvC0gga2pRg';
+    Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(90, -20, 110, 90); // west south east north
+
+    const viewer = new Cesium.Viewer('cesiumContainer', {
+      shouldAnimate: true,
+    });
+
+    const position = Cesium.Cartesian3.fromDegrees(113.11663731773662, 28.270832157608822, 500)
+    // 指定视角观察的方向
+    const heading = Cesium.Math.toRadians(135) // 角度转为弧度
+    const pitch = 0
+    const roll = 0
+    const hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll)
+    const orientation = Cesium.Transforms.headingPitchRollQuaternion(position, hpr)
+
+    // 加载 glTF / glb
+    const entity = viewer.entities.add({
+      name: 'CesiumDrone',
+      position: position,
+      orientation: orientation,
+      model: {
+        uri: '../SampleData/models/CesiumDrone/CesiumDrone.glb',
+        minimumPixelSize: 128,
+        maximumScale: 20000,
+      }
+    })
+    // 将视角锁定到 entity
+    viewer.trackedEntity = entity;
+  </script>
+ </div>
+</body>
+</html>

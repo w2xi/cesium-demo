@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="../assets/base.css" />
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.102/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.102/Build/Cesium/Cesium.js"></script>
+  <title>实体 - Entity</title>
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+  <script>
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzZmYwOTJjYi1mNmY3LTRkOGItODIxOS04YzQyOGU1MjcwZjkiLCJpZCI6MTI1MjA2LCJpYXQiOjE2NzY2MzMwNTV9.BQ-kGE-Fq696LTdmL7xEdjMR12iy5b87uvC0gga2pRg';
+    Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(90, -20, 110, 90)
+
+    const viewer = new Cesium.Viewer('cesiumContainer');
+
+    // 实体（entity）是Cesium中自带的创建图形的方法，
+    // 通过该方法可以在场景中创建点、线、面、多边形、立方体、圆等基本图形
+
+    // billboard: 广告牌，可以自定义为图片或文字
+    const billboard = viewer.entities.add({
+      position: Cesium.Cartesian3.fromDegrees(113.11026619731997, 28.20278012140625),
+      billboard: {
+        image: '../assets/images/Cesium_Logo_overlay.png'
+      }
+    })
+    // label: 标签
+    const label = viewer.entities.add({
+      position: Cesium.Cartesian3.fromDegrees(113.11031198052838,28.2010240345662), // xs tech
+      label: {
+        text: 'XS',
+        fillColor: Cesium.Color.RED,
+      }
+    })
+    // box: 盒子
+    const box = viewer.entities.add({
+      id: Date.now(), // 盒子的 ID
+      name: 'Box', // 盒子的名称
+      position: Cesium.Cartesian3.fromDegrees(113.11090971865161,28.201095237861498), // 盒子的位置
+      box: {
+        dimensions: new Cesium.Cartesian3(10, 10, 20), // 尺寸
+        distanceDisplayCondition: new Cesium.DistanceDisplayCondition(10, 2000000), // 可视距离 10 ~ 2000000
+        material: Cesium.Color.RED.withAlpha(0.5), // 材质
+        fill: true, // 材质填充
+        outline: true, // 显示轮廓线
+        outlineColor: Cesium.Color.BLACK, // 轮廓线颜色
+        outlineWidth: 1.0, // 轮廓线宽度
+        show: true, // 显示盒子
+      },
+    })
+    // polyline: 折线
+    const polyline = viewer.entities.add({
+      name: 'Green line',
+      polyline: {
+        positions: Cesium.Cartesian3.fromDegreesArray([113.10877089536292,28.20321300043081, 	113.1121628590553,28.201371575901003]),
+        width: 5,
+        arcType: Cesium.ArcType.RHUMB,
+        material: Cesium.Color.GREEN,
+      }
+    })
+
+    // point: 点
+    const point = viewer.entities.add({
+      position: Cesium.Cartesian3.fromDegrees(113.10988105085802,28.20148477398773), // 点的位置
+      point: {
+        color: Cesium.Color.YELLOW, // 颜色
+        pixelSize: 10, // 点的大小
+        distanceDisplayCondition: new Cesium.DistanceDisplayCondition(10, 10000), // 可视距离
+        show: true, // 显示和隐藏
+      },
+    })
+
+    viewer.zoomTo(viewer.entities);
+  </script>
+ </div>
+</body>
+</html>

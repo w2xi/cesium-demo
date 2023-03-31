@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="../assets/base.css" />
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.102/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.102/Build/Cesium/Cesium.js"></script>
+  <script src="../assets/vue.js"></script>
+  <title>鼠标键盘事件 - Mouse Move</title>
+  <style>
+    .card {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: #fff;
+      background: #333;
+      padding: 20px;
+      border-radius: 15px;
+      z-index: 1;
+    }
+    .card * {
+      color: #fff;
+    }
+    .position {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="tip">提示: 鼠标移动显示startPosition和endPosition</div>
+    <div class="position">
+      <div>startPosition 鼠标移动起始点</div>
+      <div>startPosition.x: {{ startPosition.x }}</div>
+      <div>startPosition.y: {{ startPosition.y }}</div>
+    </div>
+    <div class="position">
+      <div>endPosition 鼠标移动起始点</div>
+      <div>endPosition.x: {{ endPosition.x }}</div>
+      <div>endPosition.y: {{ endPosition.y }}</div>
+    </div>
+  </div>
+  <div id="cesiumContainer"></div>
+  <script>
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzZmYwOTJjYi1mNmY3LTRkOGItODIxOS04YzQyOGU1MjcwZjkiLCJpZCI6MTI1MjA2LCJpYXQiOjE2NzY2MzMwNTV9.BQ-kGE-Fq696LTdmL7xEdjMR12iy5b87uvC0gga2pRg';
+    Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(90, -20, 110, 90)
+
+    const viewer = new Cesium.Viewer('cesiumContainer', {
+      imageryProvider: new Cesium.ArcGisMapServerImageryProvider({
+        url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'
+      }), // 加载Arcgis影像服务
+    });
+    // 创建屏幕空间事件处理器
+    const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+
+    const vm = new Vue({
+      el: '.card',
+      data: {
+        startPosition: {},
+        endPosition: {},
+      },
+      mounted() {
+        handler.setInputAction((position) => {
+          // positions 中包含 startPosition 和 endPosition 两个Cartesian2对象
+          this.startPosition = position.startPosition
+          this.endPosition = position.endPosition
+        }, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
+      },
+
+      destroy() {
+        // 移除事件
+        handler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE)
+      },
+    })
+  </script>
+ </div>
+</body>
+</html>

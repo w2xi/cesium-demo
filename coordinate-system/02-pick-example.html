@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="../assets/base.css" />
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.102/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.102/Build/Cesium/Cesium.js"></script>
+  <title>Pick Tile Example - click & mousemove</title>
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+  <script>
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzZmYwOTJjYi1mNmY3LTRkOGItODIxOS04YzQyOGU1MjcwZjkiLCJpZCI6MTI1MjA2LCJpYXQiOjE2NzY2MzMwNTV9.BQ-kGE-Fq696LTdmL7xEdjMR12iy5b87uvC0gga2pRg';
+    Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(90, -20, 110, 90)
+
+    const viewer = new Cesium.Viewer('cesiumContainer');
+    // 加载3D tiles
+    const tiles = viewer.scene.primitives.add(
+      new Cesium.Cesium3DTileset({
+        url: '../assets/3dtiles/tilesset/tileset.json',
+      })
+    );
+    // 视角定位到 3D tiles
+    viewer.zoomTo(tiles);
+    // 创建屏幕空间事件处理器
+    const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+
+    let selectedFeature;
+    const originalColor = new Cesium.Color();
+    // 定义一个 点击事件
+    handler.setInputAction((movement) => {
+      // 拾取 3D tiles
+      const feature = viewer.scene.pick(movement.position); // 传入一个 Cartesian2 对象
+      if (feature) {
+        feature.color = Cesium.Color.GREENYELLOW; // 修改拾取到的 3d tiles 颜色
+        if (selectedFeature && selectedFeature !== feature) {
+          selectedFeature.color = originalColor;
+        }
+        selectedFeature = feature;
+      }
+    }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
+    let hoveredFeature;
+    handler.setInputAction((movement) => {
+      const feature = viewer.scene.pick(movement.endPosition);
+      if (feature) {
+        feature.color = Cesium.Color.RED;
+        if (hoveredFeature && feature !== hoveredFeature) {
+          hoveredFeature.color = originalColor;
+        }
+        hoveredFeature = feature;
+      } else if (hoveredFeature) {
+        hoveredFeature.color = originalColor;
+      }
+      if (selectedFeature && feature !== selectedFeature) { // leave selected tile
+        selectedFeature.color = Cesium.Color.GREENYELLOW;
+      }
+    }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+  </script>
+ </div>
+</body>
+</html>
